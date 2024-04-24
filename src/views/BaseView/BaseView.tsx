@@ -1,15 +1,27 @@
 import { View, Text } from "react-native";
 
-import { WrapperProps } from "../../common/props";
+import { useAuth } from "../../providers/AuthenticationProvider";
 
 import styles from "./BaseView.scss";
 
-interface BaseViewProps extends WrapperProps {}
+interface BaseViewProps {
+    requiresAuth?: boolean
+    children?: React.ReactNode
+}
 
-export const BaseView = (props: BaseViewProps) => {
+export function BaseView(props: BaseViewProps) {
+
+    const { isAuthenticated } = useAuth();
+
+    if( (props.requiresAuth ?? true) && !isAuthenticated ) {
+        return (
+            <Text>Unauthorized</Text>
+        )
+    }
+
     return (
-        <View>
-            <Text>Base View</Text>
+        <View style={styles.container}>
+            { props.children }
         </View>
     );
 }
